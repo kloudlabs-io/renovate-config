@@ -1,0 +1,12 @@
+---
+# Same rules as kloudlabs-infra, so Markdown reads the same across repos.
+globs:
+  - "**/*.md"
+
+config:
+  # No line-length limit. Editors soft-wrap; hard-wrapping prose only makes
+  # diffs noisier by reflowing a whole paragraph when one word changes.
+  MD013: false
+
+  # Inline HTML is occasionally useful inside tables.
+  MD033: false
