@@ -31,5 +31,11 @@ credentials, `hostRules` with tokens or private registry details here.
 ## Validating
 
 ```shell
-npx --yes --package renovate -- renovate-config-validator default.json
+npx --yes --package renovate -- renovate-config-validator --strict --no-global default.json .github/renovate.json5
 ```
+
+`--no-global` matters: without it, named files are validated as self-hosted
+global config and repo-config mistakes can pass.
+
+CI runs this check, along with markdownlint, actionlint and zizmor, on every
+pull request and push to `main` (`.github/workflows/lint.yml`).

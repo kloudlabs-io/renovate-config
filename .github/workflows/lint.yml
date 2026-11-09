@@ -1,0 +1,73 @@
+---
+name: lint
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Each job asks for what it needs; nothing here writes to the repository.
+permissions: {}
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The check that matters most: every repo that extends this preset breaks if
+  # default.json is invalid. --strict also fails on options Renovate would
+  # migrate, so deprecated config is caught before consumers see warnings.
+  renovate-config:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      # Unpinned on purpose: consumers run the hosted Renovate app, which is
+      # always on the latest release, so that is the version to validate
+      # against. A pin would only lag behind it and open a PR several times a
+      # day. --no-global is required: named files are otherwise validated as
+      # self-hosted global config, which accepts repo-config mistakes.
+      - name: renovate-config-validator
+        run: npx --yes --package renovate -- renovate-config-validator --strict --no-global default.json .github/renovate.json5
+
+  markdown:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Globs and rule config come from .markdownlint-cli2.yaml.
+      - uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34 # v25.0.0
+
+  workflows:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Syntax, expressions and shellcheck on run: blocks.
+      - uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
+
+      # Security audit: permissions, credential persistence, injection and
+      # unpinned actions. Findings fail the job instead of going to code
+      # scanning, so no security-events permission is needed.
+      - uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+        with:
+          advanced-security: false
