@@ -1,0 +1,6 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  // This repository's own Renovate config. It dogfoods the preset it
+  // publishes, so a broken default.json shows up here first.
+  extends: ['github>kloudlabs-io/renovate-config'],
+}
