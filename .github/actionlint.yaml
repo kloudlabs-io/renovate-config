@@ -1,0 +1,7 @@
+---
+self-hosted-runner:
+  # Not self-hosted: GitHub-hosted labels that actionlint does not know yet.
+  # ubuntu-26.04 is GA (actions/runner-images#14748), but actionlint 1.7.12
+  # predates it. Remove this file once a release lists the label.
+  labels:
+    - ubuntu-26.04
