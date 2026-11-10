@@ -18,7 +18,7 @@ jobs:
   # default.json is invalid. --strict also fails on options Renovate would
   # migrate, so deprecated config is caught before consumers see warnings.
   renovate-config:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
 
@@ -40,7 +40,7 @@ jobs:
         run: npx --yes --package renovate -- renovate-config-validator --strict --no-global default.json .github/renovate.json5
 
   markdown:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
 
@@ -53,7 +53,7 @@ jobs:
       - uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34 # v25.0.0
 
   workflows:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
 
